@@ -119,14 +119,21 @@ class Facet:
 
     # Площадь грани
     def area(self):
-        edge_1 = self.vertexes[1] - self.vertexes[0]
-        edge_2 = self.vertexes[-1] - self.vertexes[0]
-        area = edge_1.cross(edge_2).magnitude()
-        # если грань - четырёхугольник
-        if len(self.vertexes) == 4:
-            return area
+        # площадь треугольника, построенного на двух векторах
+        def __triangle_area(edge_1, edge_2):
+            return edge_1.cross(edge_2).magnitude() / 2
         # если грань - треугольник
-        return area / 2
+        if len(self.vertexes) == 3:
+            edge_1 = self.vertexes[1] - self.vertexes[0]
+            edge_2 = self.vertexes[-1] - self.vertexes[0]
+            return __triangle_area(edge_1, edge_2)
+        # если грань - четырёхугольник
+        # делим его на два треугольника и суммируем площадь
+        edge_1 = self.vertexes[1] - self.vertexes[0]
+        edge_2 = self.vertexes[2] - self.vertexes[0]
+        edge_3 = self.vertexes[-1] - self.vertexes[0]
+        return (__triangle_area(edge_1, edge_2) +
+                __triangle_area(edge_2, edge_3))
 
 
 class Polyedr:
