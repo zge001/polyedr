@@ -1,0 +1,3 @@
+.coverage
+./common/__pycache__/
+./shadow/__pycache__/

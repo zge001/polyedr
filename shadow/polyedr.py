@@ -45,6 +45,7 @@ class Edge:
 
     # Учёт тени от одной грани
     def shadow(self, facet):
+        # Рисуем прямую x = -2
         # «Вертикальная» грань не затеняет ничего
         if facet.is_vertical():
             return
@@ -116,6 +117,17 @@ class Facet:
         return sum(self.vertexes, R3(0.0, 0.0, 0.0)) * \
             (1.0 / len(self.vertexes))
 
+    # Площадь грани
+    def area(self):
+        edge_1 = self.vertexes[1] - self.vertexes[0]
+        edge_2 = self.vertexes[-1] - self.vertexes[0]
+        area = edge_1.cross(edge_2).magnitude()
+        # если грань - четырёхугольник
+        if len(self.vertexes) == 4:
+            return area
+        # если грань - треугольник
+        return area / 2
+
 
 class Polyedr:
     """ Полиэдр """
@@ -127,6 +139,10 @@ class Polyedr:
 
         # списки вершин, рёбер и граней полиэдра
         self.vertexes, self.edges, self.facets = [], [], []
+        # список вершин без преобразований
+        _vertexes = []
+        # суммарная площадь граней ровно с одной хорошей вершиной
+        self.good_area = 0.0
 
         # список строк файла
         with open(file) as f:
@@ -144,20 +160,34 @@ class Polyedr:
                 elif i < nv + 2:
                     # задание всех вершин полиэдра
                     x, y, z = (float(x) for x in line.split())
-                    self.vertexes.append(R3(x, y, z).rz(
-                        alpha).ry(beta).rz(gamma) * c)
+                    # добавляем вершину без преобразований
+                    _vertexes.append(R3(x, y, z))
+                    # проекция вершины
+                    vert_proj = R3(x, y, z).rz(alpha).ry(beta).rz(gamma) * c
+                    # находится ли проекция вершины правее прямой x = -2
+                    vert_proj.set_is_good(-2)
+                    self.vertexes.append(vert_proj)
                 else:
                     # вспомогательный массив
                     buf = line.split()
                     # количество вершин очередной грани
                     size = int(buf.pop(0))
+                    # кол-во хороших точек в грани
+                    good_points_num = 0
                     # массив вершин этой грани
-                    vertexes = list(self.vertexes[int(n) - 1] for n in buf)
+                    vertexes = []
+                    for n in buf:
+                        if self.vertexes[int(n) - 1].is_good:
+                            good_points_num += 1
+                        vertexes.append(self.vertexes[int(n) - 1])
                     # задание рёбер грани
                     for n in range(size):
                         self.edges.append(Edge(vertexes[n - 1], vertexes[n]))
                     # задание самой грани
                     self.facets.append(Facet(vertexes))
+                    if good_points_num == 1:
+                        orig_vertexes = [_vertexes[int(n) - 1] for n in buf]
+                        self.good_area += Facet(orig_vertexes).area()
 
     # Метод изображения полиэдра
     def draw(self, tk):  # pragma: no cover
@@ -167,4 +197,3 @@ class Polyedr:
                 e.shadow(f)
             for s in e.gaps:
                 tk.draw_line(e.r3(s.beg), e.r3(s.fin))
-

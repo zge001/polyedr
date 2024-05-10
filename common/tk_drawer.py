@@ -1,4 +1,5 @@
 from tkinter import *
+from common.r3 import R3
 
 # Размер окна
 SIZE = 900
@@ -36,21 +37,20 @@ class TkDrawer:
     # Стирание существующей картинки
     def clean(self):
         self.canvas.create_rectangle(0, 0, SIZE, SIZE, fill="white")
-        self.root.update()
+        # Рисуем прямую x = -2
+        self.draw_line(R3(-2.0, SIZE, 0.0), R3(-2.0, -SIZE, 0.0), color="red")
 
     # Рисование линии
-    def draw_line(self, p, q):
-        self.canvas.create_line(x(p), y(p), x(q), y(q), fill="black", width=1)
+    def draw_line(self, p, q, color="black"):
+        self.canvas.create_line(x(p), y(p), x(q), y(q), fill=color, width=1)
         self.root.update()
 
 
 if __name__ == "__main__":  # pragma: no cover
 
     import time
-    from r3 import R3
     tk = TkDrawer()
     tk.clean()
     tk.draw_line(R3(0.0, 0.0, 0.0), R3(100.0, 100.0, 0.0))
     tk.draw_line(R3(0.0, 0.0, 0.0), R3(0.0, 100.0, 0.0))
     time.sleep(5)
-

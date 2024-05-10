@@ -1,4 +1,4 @@
-from math import sin, cos
+from math import sin, cos, sqrt
 
 
 class R3:
@@ -42,6 +42,14 @@ class R3:
             self.z * other.x - self.x * other.z,
             self.x * other.y - self.y * other.x)
 
+    # Находится ли проекция правее прямой x = x0?
+    def set_is_good(self, x0=-2.0):
+        self.is_good = self.x > x0
+
+    # Модуль вектора
+    def magnitude(self):
+        return sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
+
 
 if __name__ == "__main__":  # pragma: no cover
     x = R3(1.0, 1.0, 1.0)
@@ -54,4 +62,3 @@ if __name__ == "__main__":  # pragma: no cover
     print("u", type(u), u)
     v = x.cross(y)
     print("v", type(v), v.__dict__)
-
