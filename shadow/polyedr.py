@@ -170,9 +170,11 @@ class Polyedr:
                     # добавляем вершину без преобразований
                     _vertexes.append(R3(x, y, z))
                     # проекция вершины
-                    vert_proj = R3(x, y, z).rz(alpha).ry(beta).rz(gamma) * c
+                    vert_proj = R3(x, y, z).rz(alpha).ry(beta).rz(gamma)
                     # находится ли проекция вершины правее прямой x = -2
                     vert_proj.set_is_good(-2)
+                    # домножаем на коэффициент гомотетии
+                    vert_proj *= c
                     self.vertexes.append(vert_proj)
                 else:
                     # вспомогательный массив
