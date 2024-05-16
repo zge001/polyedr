@@ -5,8 +5,9 @@ class R3:
     """ Вектор (точка) в R3 """
 
     # Конструктор
-    def __init__(self, x, y, z):
+    def __init__(self, x, y, z, is_good=False):
         self.x, self.y, self.z = x, y, z
+        self.is_good = is_good
 
     # Сумма векторов
     def __add__(self, other):
@@ -18,7 +19,7 @@ class R3:
 
     # Умножение на число
     def __mul__(self, k):
-        return R3(k * self.x, k * self.y, k * self.z)
+        return R3(self.x * k, self.y * k, self.z * k, self.is_good)
 
     # Поворот вокруг оси Oz
     def rz(self, fi):
