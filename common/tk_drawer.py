@@ -39,7 +39,8 @@ class TkDrawer:  # pragma: no cover
     def clean(self):
         self.canvas.create_rectangle(0, 0, SIZE, SIZE, fill="white")
         # Рисуем прямую x = -2
-        self.draw_line(R3(-2.0, SIZE, 0.0), R3(-2.0, -SIZE, 0.0), self.homothety, color="red")
+        self.draw_line(R3(-2.0, SIZE, 0.0), R3(-2.0, -SIZE, 0.0),
+                       self.homothety, color="red")
 
     # Рисование линии
     def draw_line(self, p, q, homothety=1.0, color="black"):
